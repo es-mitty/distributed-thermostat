@@ -1,5 +1,7 @@
 ## IDF Component Manager Manifest File
 dependencies:
+  espressif/onewire_bus: "^1.0.1"
+  espressif/ds18b20: "^0.1.0"
   espressif/mdns: "*"
   ## Required IDF version
   idf:
