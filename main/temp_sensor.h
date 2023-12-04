@@ -18,5 +18,6 @@ esp_err_t get_single_temp_sensor(int gpio_pin, ds18b20_device_handle_t *device_h
     ESP_ERROR_CHECK(onewire_new_device_iter(&bus_handle, &device_iter));
     ESP_ERROR_CHECK(onewire_device_iter_get_next(&device_iter, &device));
     // Convert to DS18B20
+    ESP_ERROR_CHECK(ds18b20_new_device(&device, &sensor_config, &temp_sensor));
     // Print a temp
 }
