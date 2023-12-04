@@ -1,18 +1,17 @@
 #include "onewire_bus.h"
 #include "ds18b20.h"
 
-
 typedef struct{
-    // Onewire variables
+    // Onewire structs
     onewire_bus_config_t bus_config;
     onewire_bus_rmt_config_t rmt_config;
     onewire_bus_handle_t bus_handle;
     onewire_device_iter_handle_t device_iter;
     onewire_device_t device;
-    // DS18B20 variables
+    // DS18B20 structs
     ds18b20_config_t sensor_config;
     ds18b20_device_handle_t temp_sensor_handle;
-} TempSensoryMemory;
+} TempSensoryMemory; // Required structs to initialize a temperature sensor.
 
 void print_temp(ds18b20_device_handle_t device_handle);
 float to_fahrenheit(float from_celsius);
@@ -32,6 +31,10 @@ esp_err_t get_single_temp_sensor(int gpio_pin, TempSensoryMemory *sensor_struct)
 }
 
 void print_temp(ds18b20_device_handle_t device_handle){
+    /**
+     * Given a DS18B20 device handle, trigger a temperature conversion and print
+     * the temperature in degrees Farhrenheit.
+    */
     ds18b20_trigger_temperature_conversion(device_handle);
     float temp = 0;
     ds18b20_get_temperature(device_handle, &temp);
