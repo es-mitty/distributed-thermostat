@@ -2,6 +2,7 @@
 #include "ds18b20.h"
 
 void print_temp(ds18b20_device_handle_t device_handle);
+float to_fahrenheit(float from_celsius);
 
 esp_err_t get_single_temp_sensor(int gpio_pin, ds18b20_device_handle_t *device_handle){
     // Onewire variables
@@ -30,5 +31,9 @@ void print_temp(ds18b20_device_handle_t device_handle){
     ds18b20_trigger_temperature_conversion(device_handle);
     float temp = 0;
     ds18b20_get_temperature(device_handle, &temp);
-    printf("Temperature is %.5f degrees.\n", temp);
+    printf("Temperature is %.5f°F.\n", to_fahrenheit(temp));
+}
+
+float to_fahrenheit(float from_celsius){
+    return (from_celsius * 9.f / 5.f) + 32.f;
 }
