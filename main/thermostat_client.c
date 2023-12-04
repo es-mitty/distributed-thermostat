@@ -6,14 +6,15 @@
 
 #define TEMP_SENSOR_PIN 13
 
+ds18b20_device_handle_t *temp_sensor;
+
 void app_main(void)
 {
-    ds18b20_device_handle_t handle;
-    get_single_temp_sensor(TEMP_SENSOR_PIN, &handle);
+    temp_sensor = malloc(sizeof(ds18b20_device_handle_t));
+    get_single_temp_sensor(TEMP_SENSOR_PIN, temp_sensor);
 
     while(1){
-        print_temp(handle);
+        print_temp(*temp_sensor);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
-
 }
