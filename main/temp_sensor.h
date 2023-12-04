@@ -10,7 +10,6 @@ esp_err_t get_single_temp_sensor(int gpio_pin, ds18b20_device_handle_t *device_h
     onewire_device_t device;
     // DS18B20 variables
     ds18b20_config_t sensor_config = {};
-    ds18b20_device_handle_t temp_sensor;
 
     // Init bus
     ESP_ERROR_CHECK(onewire_new_bus_rmt(&bus_config, &rmt_config, bus_handle));
@@ -18,6 +17,10 @@ esp_err_t get_single_temp_sensor(int gpio_pin, ds18b20_device_handle_t *device_h
     ESP_ERROR_CHECK(onewire_new_device_iter(&bus_handle, &device_iter));
     ESP_ERROR_CHECK(onewire_device_iter_get_next(&device_iter, &device));
     // Convert to DS18B20
-    ESP_ERROR_CHECK(ds18b20_new_device(&device, &sensor_config, &temp_sensor));
+    ESP_ERROR_CHECK(ds18b20_new_device(&device, &sensor_config, device_handle));
     // Print a temp
+    ESP_ERROR_CHECK(ds18b20_trigger_temperature_conversion(device_handle));
+    float temp = 0;
+    ESP_ERROR_CHECK(ds18b20_get_temperature(device_handle, &temp));
+    printf("Temperature is %.2f degrees.", temp);
 }
