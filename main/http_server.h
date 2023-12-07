@@ -8,9 +8,9 @@ esp_err_t basic_handler(httpd_req_t* req){
     
     return ESP_OK;
 }
-httpd_uri_t base_uri{
+httpd_uri_t base_uri = {
     .uri = "/",
-    .method = HTTPD_GET,
+    .method = HTTP_GET,
     .handler = basic_handler,
     .user_ctx = NULL
 };
