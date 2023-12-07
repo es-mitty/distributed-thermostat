@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermostat</title>
+</head>
+<body>
+</body>
+<script>
+    body = document.body
+    async function getData(){
+        response = await fetch("thermostat.local/data")
+        json = await response.json()
+        body.innerHTML = JSON.stringify(json)
+    }
+</script>
+</html>
