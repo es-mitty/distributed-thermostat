@@ -1,4 +1,7 @@
 #include "esp_http_server.h"
+#include "json.h"
+
+
 
 // Basic Handle that returns "OK"
 esp_err_t basic_handler(httpd_req_t* req){
@@ -11,12 +14,18 @@ esp_err_t basic_handler(httpd_req_t* req){
 
 esp_err_t data_get(httpd_req_t* req){
     const char* resp = "{\"system_name\":\"388 College St. #6\",\"zones\":[{\"name\":\"Eli's Room1234\",\"target_temp\":10,\"measured_temp\":9.8},{\"name\":\"Luke's Room\",\"target_temp\":11,\"measured_temp\":10.8},{\"name\":\"Living Room\",\"target_temp\":12,\"measured_temp\":11.8}]}";
+    
     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
     return ESP_OK;
 }
 
 esp_err_t data_post(httpd_req_t* req){
-
+    int req_len = req->content_len;
+    char buff[req_len];
+    httpd_req_recv(req, buff, req_len);
+    ESP_LOGI(TAG, "Data: %s", buff);
+    httpd_resp_set_status(req, HTTPD_200);
+    httpd_resp_send(req, NULL, 0);
     return ESP_OK;
 }
 
