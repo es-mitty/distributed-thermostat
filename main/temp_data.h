@@ -31,7 +31,8 @@ void data_ingest(char* json_string, thermo_sys_t* t_system_handle){
 
     char system_name[30];
     int num_sensors;
-    const cJSON *j_zones;
+    const cJSON *j_zones = NULL;
+    const cJSON *j_zone = NULL;
 
     if (json == NULL)
     {
@@ -49,8 +50,17 @@ void data_ingest(char* json_string, thermo_sys_t* t_system_handle){
     t_system_handle->num_sensors = cJSON_GetObjectItem(json, "num_sensors")->valueint;
     j_zones = cJSON_GetObjectItem(json, "zones");
     t_system_handle->zones = (thermo_data_t*)realloc(t_system_handle->zones, sizeof(thermo_data_t)*t_system_handle->num_sensors);
-
     
+    int zone_index = 0;
+    cJSON_ArrayForEach(j_zone, j_zones){
+        thermo_data_t zone = t_system_handle->zones[zone_index];
+        
+        strcpy(zone.node_name, cJSON_GetObjectItem(j_zone, "node_name")->valuestring);
+        zone.target_temp = cJSON_GetObjectItem(j_zone, "target_temp")->valuedouble;
+        zone.measured_temp = cJSON_GetObjectItem(j_zone, "measured_temp")->valuedouble;
+
+        zone_index++;
+    }
 
     cJSON_Delete(json);
 }
