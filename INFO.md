@@ -2,23 +2,26 @@
 ```json
 {
     "system_name": "388 College St. #6",
+    "zone_len":3,
     "zones":[
         {
             "name":"Eli's Room",
+            "id":0,
             "target_temp":10.0,
-            "measured_temp":9.8,
+            "measured_temp":9.8
         },
         {
             "name":"Luke's Room",
+            "id":0,
             "target_temp":11.0,
-            "measured_temp":10.8,
+            "measured_temp":10.8
         },
         {
             "name":"Living Room",
+            "id":0,
             "target_temp":12.0,
-            "measured_temp":11.8,
-        },
+            "measured_temp":11.8
+        }
     ]
-
 }
 ```
