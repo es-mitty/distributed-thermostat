@@ -60,7 +60,7 @@
 }
 
     async function refresh_server() {
-        resp = escapeSpecialChars(JSON.stringify(json_store));
+        resp = JSON.stringify(json_store);
         const response = await fetch(data_endpoint, {
             method: "POST",
             headers: {
