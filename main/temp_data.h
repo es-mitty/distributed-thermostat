@@ -1,21 +1,22 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "cJSON.h"
 #include "string.h"
 
-typedef struct thermo_data_t{
+typedef struct {
     char node_name[30];
-    float target_temp;
-    float measured_temp;
-};
+    double target_temp;
+    double measured_temp;
+} thermo_data_t;
 
-typedef struct thermo_sys_t{
+typedef struct {
     char system_name[30];
     int num_sensors;
     thermo_data_t *zones;
-};
+} thermo_sys_t;
 
 void init_thermo_data(thermo_sys_t *tdat_handle){
-    
+
     strcpy(tdat_handle->system_name, "Example Household");
     tdat_handle->num_sensors = 1;
 
@@ -25,10 +26,36 @@ void init_thermo_data(thermo_sys_t *tdat_handle){
 
 }
 
-void data_ingest(char* json_string){
+void data_ingest(char* json_string, thermo_sys_t* t_system_handle){
+    cJSON *json = cJSON_Parse(json_string);
+
+    char system_name[30];
+    int num_sensors;
+    const cJSON *j_zones;
+
+    if (json == NULL)
+    {
+        const char *error_ptr = cJSON_GetErrorPtr();
+        if (error_ptr != NULL)
+        {
+            printf("Error before: %s\n", error_ptr);
+        }
+    }else{
+
+    }
+    printf("%zu\n", strlen(json_string));
+
+    strcpy(t_system_handle->system_name, cJSON_GetObjectItem(json, "system_name")->valuestring);
+    t_system_handle->num_sensors = cJSON_GetObjectItem(json, "num_sensors")->valueint;
+    j_zones = cJSON_GetObjectItem(json, "zones");
+    t_system_handle->zones = (thermo_data_t*)realloc(t_system_handle->zones, sizeof(thermo_data_t)*t_system_handle->num_sensors);
+
     
+
+    cJSON_Delete(json);
 }
 
-char* data_export(){
+char* data_export(thermo_sys_t* t_system_handle){
+
     return "";
 }
