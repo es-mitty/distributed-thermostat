@@ -1,7 +1,9 @@
 #include "esp_http_server.h"
 #include "esp_log.h"
+#include "temp_data.h"
 
 static const char *HTTPTAG = "HTTP SERVER";
+thermo_sys_t * global_t_system_handle;
 
 // Basic Handle that returns "OK"
 esp_err_t basic_handler(httpd_req_t* req){
@@ -31,8 +33,10 @@ esp_err_t data_post(httpd_req_t* req){
     httpd_resp_set_hdr(req, "Access-Control-Allow-Headers", "Content-Type");
 
     int req_len = req->content_len;
-    char buff[req_len];
+    char buff[req_len + 1];
     httpd_req_recv(req, buff, req_len);
+    buff[req_len] = '\0';
+    data_ingest(buff, global_t_system_handle);
     ESP_LOGI(HTTPTAG, "Data: %s", buff);
     httpd_resp_set_status(req, HTTPD_200);
     httpd_resp_send(req, NULL, 0);
@@ -68,8 +72,11 @@ httpd_uri_t data_post_uri = {
 };
 
 // Server starter
-httpd_handle_t start_webserver(void)
+httpd_handle_t start_webserver(thermo_sys_t* t_system_handle)
 {
+
+    global_t_system_handle = t_system_handle;
+
     /* Generate default configuration */
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
 
