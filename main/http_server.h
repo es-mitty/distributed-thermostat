@@ -3,14 +3,14 @@
 // Basic Handle that returns "OK"
 esp_err_t basic_handler(httpd_req_t* req){
     
-    const char* resp = "<iframe src='https://esmith87.w3.uvm.edu/' style='width:100vw; height:100vh;'/>";
+    const char* resp = "<!DOCTYPE html>\n<html lang=en>\n<head>\n<meta charset=UTF-8>\n<meta name=viewport content=\"width=device-width, initial-scale=1.0\">\n<title>Thermostat</title>\n</head>\n<body>\n</body>\n<script>body=document.body;test_json={\"system_name\":\"388 College St. #6\",\"zones\":[{\"name\":\"Eli\'s Room\",\"target_temp\":10.0,\"measured_temp\":9.8,},{\"name\":\"Luke\'s Room\",\"target_temp\":11.0,\"measured_temp\":10.8,},{\"name\":\"Living Room\",\"target_temp\":12.0,\"measured_temp\":11.8,},]};document.title=test_json.system_name;heading=document.createElement(\"h1\");heading.innerHTML=test_json.system_name;body.appendChild(heading);function changeItem(key,index,value){test_json.zones[index][key]=value;console.log(test_json);}\nfunction gen_input_elem(element,key,index,label){return`<label for=\"${key}\">${label}</label><input type=\"text\"name=\"${key}\"value=\"${element[key]}\"onchange=\"changeItem(${key}, ${index}, this.value)\"><br>`;}\nfunction refresh_ui(){test_json.zones.forEach((element,index,array)=>{elem=document.createElement(\"section\");elem.innerHTML+=gen_input_elem(element,\"name\",index,\"Name\");elem.innerHTML+=gen_input_elem(element,\"target_temp\",index,\"Desired Temp\");elem.innerHTML+=`Measured Temp:${element.measured_temp}`;body.appendChild(elem);});}\nrefresh_ui();async function getData(){response=await fetch(\"http://thermostat.local/data\");json=await response.text();if(json){\ntest_json=JSON.parse(json);refresh_ui();}};setTimeout(getData,1000);</script>\n</html>";
     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
     
     return ESP_OK;
 }
 
 esp_err_t data_get(httpd_req_t* req){
-    const char* resp = "<p>Data get.</p>";
+    const char* resp = "{\"system_name\":\"388 College St. #6\",\"zones\":[{\"name\":\"Eli's Room1234\",\"target_temp\":10,\"measured_temp\":9.8},{\"name\":\"Luke's Room\",\"target_temp\":11,\"measured_temp\":10.8},{\"name\":\"Living Room\",\"target_temp\":12,\"measured_temp\":11.8}]}";
     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
     return ESP_OK;
 }

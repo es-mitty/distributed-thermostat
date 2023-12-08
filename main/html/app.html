@@ -36,7 +36,7 @@
     document.title = test_json.system_name;
     heading = document.createElement("h1");
     heading.innerHTML = test_json.system_name;
-    body.appendChild(heading)
+    body.appendChild(heading);
 
     function changeItem(key, index, value) {
         test_json.zones[index][key] = value;
@@ -44,7 +44,7 @@
     }
 
     function gen_input_elem(element, key, index, label) {
-        return `<label for="${key}">${label}</label><input type="text" name="${key}" value="${element[key]}" onchange="changeItem(${key}, ${index}, this.value)"><br>`
+        return `<label for="${key}">${label}</label><input type="text" name="${key}" value="${element[key]}" onchange="changeItem(${key}, ${index}, this.value)"><br>`;
     }
 
     function refresh_ui() {
@@ -52,17 +52,19 @@
             elem = document.createElement("section");
             elem.innerHTML += gen_input_elem(element, "name", index, "Name");
             elem.innerHTML += gen_input_elem(element, "target_temp", index, "Desired Temp");
-            elem.innerHTML += `Measured Temp: ${element.measured_temp}`
+            elem.innerHTML += `Measured Temp: ${element.measured_temp}`;
             body.appendChild(elem);
         });
     }
     refresh_ui();
 
     async function getData() {
-        response = await fetch("thermostat.local/data");
-        json = await response.json();
-        if(json)
-            test_json = JSON.stringify(json);
+        response = await fetch("http://thermostat.local/data");
+        json = await response.text();
+        if(json){
+            test_json = JSON.parse(json);
+            refresh_ui();
+        }
     };
     setTimeout(getData, 1000);
 </script>
