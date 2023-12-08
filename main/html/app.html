@@ -10,45 +10,32 @@
 <body>
 </body>
 <script>
-    body = document.body;
+    const body = document.body;
+    const data_endpoint = "http://thermostat.local/data";
 
-    test_json = {
-        "system_name": "388 College St. #6",
-        "zones": [
-            {
-                "name": "Eli's Room",
-                "target_temp": 10.0,
-                "measured_temp": 9.8,
-            },
-            {
-                "name": "Luke's Room",
-                "target_temp": 11.0,
-                "measured_temp": 10.8,
-            },
-            {
-                "name": "Living Room",
-                "target_temp": 12.0,
-                "measured_temp": 11.8,
-            },
-        ]
+    json_store = {
+        "system_name": "Unamed System",
+        "zone_len":0,
+        "zones": []
     };
 
-    document.title = test_json.system_name;
-    heading = document.createElement("h1");
-    heading.innerHTML = test_json.system_name;
-    body.appendChild(heading);
-
     function changeItem(key, index, value) {
-        test_json.zones[index][key] = value;
-        console.log(test_json);
+        json_store.zones[index][key] = value;
+        console.log(json_store);
+        refresh_server();
     }
 
     function gen_input_elem(element, key, index, label) {
-        return `<label for="${key}">${label}</label><input type="text" name="${key}" value="${element[key]}" onchange="changeItem(${key}, ${index}, this.value)"><br>`;
+        return `<label for="${key}">${label}</label><input type="text" id="${key}" value="${element[key]}" onchange="changeItem(${key}, ${index}, this.value)"><br>`;
     }
 
     function refresh_ui() {
-        test_json.zones.forEach((element, index, array) => {
+        body.innerHTML = "";
+        document.title = json_store.system_name;
+        heading = document.createElement("h1");
+        heading.innerHTML = json_store.system_name;
+        body.appendChild(heading);
+        json_store.zones.forEach((element, index, array) => {
             elem = document.createElement("section");
             elem.innerHTML += gen_input_elem(element, "name", index, "Name");
             elem.innerHTML += gen_input_elem(element, "target_temp", index, "Desired Temp");
@@ -58,15 +45,40 @@
     }
     refresh_ui();
 
+    function escapeSpecialChars(inputString) {
+    const escapeMap = {
+        "'": "\\'",
+        '"': '\\"',
+        '\\': '\\\\',
+        '\n': '\\n',
+        '\r': '\\r',
+        '\t': '\\t',
+        '\b': '\\b',
+        '\f': '\\f',
+    };
+    return inputString.replace(/(['"\\\n\r\t\b\f])/g, (match) => escapeMap[match]);
+}
+
+    async function refresh_server() {
+        resp = escapeSpecialChars(JSON.stringify(json_store));
+        const response = await fetch(data_endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: `${resp}`
+        });
+    }
+
     async function getData() {
-        response = await fetch("http://thermostat.local/data");
+        response = await fetch(data_endpoint);
         json = await response.text();
-        if(json){
-            test_json = JSON.parse(json);
+        if (json) {
+            json_store = JSON.parse(json);
             refresh_ui();
         }
-    };
-    setTimeout(getData, 1000);
+    }
+    setInterval(getData, 1000);
 </script>
 
 </html>
