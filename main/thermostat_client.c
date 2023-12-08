@@ -28,12 +28,14 @@ void app_main(void)
 {
 
     static httpd_handle_t server = NULL;
+    static thermo_sys_t thermo_sys;
+    init_thermo_data(&thermo_sys);
 
     setup_wifi();
 
     TempSensoryMemory *temp_sensor_mem = malloc(sizeof(TempSensoryMemory));
     xTaskCreate(&temp_task, "Temp", 4096, temp_sensor_mem, 1, NULL);
 
-    server = start_webserver();
+    server = start_webserver(&thermo_sys);
     start_mdns();
 }
